@@ -1,0 +1,119 @@
+
+.contents{
+    display: flex;
+
+}
+
+
+
+body{
+    display: flex;
+    flex-direction: column;
+    background-color: black;
+    border-width: 3px;
+    border-style: solid;
+    border-image: 
+      linear-gradient(
+        to bottom, 
+        #F900BF, 
+        rgba(0, 0, 0, 0)
+      ) 1 100%;
+}
+
+
+.container-fluid{
+    padding: 30px;
+    justify-content: center;
+    align-items: center;
+}
+
+.navbar-brand{
+    margin-right: 15%;
+    font-family: 'Righteous', cursive;
+    font-size: 50px;
+    color: black;
+    background-color: #F900BF;
+    padding: 15px;
+    border-radius: 30%;
+    transition: 0.3s;
+}
+
+.navbar-brand:hover{
+
+    font-size: 55px;
+    color: black;
+
+
+}
+
+
+
+.library{
+    width: 100%;
+    height: 100%;
+    background: #46244C21;
+    border-radius: 3%;
+    padding: 30px;
+    margin: 20px;
+    
+   
+}
+
+
+h3{
+    font-size: 34px;
+    font-family: 'Jost', sans-serif;
+    font-weight: bolder;
+    color: #F900BF  ;
+    
+}
+
+.list-group-item{
+    background:none;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    font-family: 'Jost', sans-serif;
+    font-size: 20px;
+    color: white;
+    transition: 0.3s;
+
+}
+
+.list-group-item:hover{
+    background:none;
+    font-size: 25px;
+    color: #F900BF ;
+    border: 2px solid #F900BF;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+
+}
+
+.list-group-item:focus{
+    background:none;
+    font-size: 25px;
+    color: #F900BF ;
+    border: 2px solid #F900BF;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+
+}
+
+
+
+h5{
+    font-weight: bolder;
+    font-size: 34px;
+    padding: 12px;
+}
+
+
+.artist{
+    background-color: #F900BF;
+    color: white;
+    padding: 4px;
+    border-radius: 20%;
+    margin-left: 40px;
+}

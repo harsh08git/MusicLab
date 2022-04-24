@@ -1,0 +1,247 @@
+<!-- {% load static %} -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Righteous&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Jost&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/landing.css' %}">
+  <link rel="icon"  href= "{% static 'img/icon.png' %}">
+    <script src=" http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js">
+    </script>
+
+  <title>MusicLab</title>
+</head>
+
+<body>
+  <div class="container1">
+    <nav class="navbar navbar-expand-lg navbar">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/">MUSICLAB</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <form class="d-flex" method="POST">
+          {% csrf_token %}
+          <input class="form-control me-2" type="search"  id="songName" name="song-name" placeholder="Search for song-name"aria-label="Search">
+          <button type="button" class=" waves-effect waves-light btn modal-trigger" id="buttonsub"><img src="{% static 'img/search.svg' %}"
+                style="width: 20px;" onclick="submit()"></img></button>
+        </form>
+      
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+            <li class="nav-item">
+              <a class="nav-link active" href="/login/">Login</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </div>
+  {% if dict != None %}
+  <div class="results" style="text-align: center; background-color: #46244C21; border-radius: 10%;  
+  height: 100%;
+  width: 50%;
+  margin: auto;
+  padding:30px;
+  font-family: 'Jost', sans-serif;
+  color: #FF10F0;
+  transition: 0.3s ease-in-out ;">
+    <a href={{ dict.link }} target="_blank" style="text-decoration: none; color: #FF10F0;"><h5 >{{ dict.name }} <span class="artist" style=  "background-color: #F900BF;
+      color: white;
+      padding: 4px;
+      border-radius: 20%;
+      margin-left: 40px;"> By {{ dict.artist }}</span> </h5></a>
+
+  </div>
+{% endif %}
+  <div class="genres">
+      <div class="card" onclick=" window.open('/genre/top30','mywindow');">
+        <div class="card-body">
+          <h5 class="card-title">Top 30</h5>
+          <img class="cover" src="{% static 'img/top.jpg' %}" alt="">
+          <div class="overlay">
+            <div class="content">
+              <h3>Listen to Top 30 songs to sooth your mind</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+ 
+    <div class="card" onclick=" window.open('/genre/pop','mywindow');">
+      <div class="card-body">
+        <h5 class="card-title">Pop</h5>
+        <img class="cover" src="{% static 'img/pop.jpeg' %}" alt="">
+        <div class="overlay">
+          <div class="content">
+            <h3>Discover your new favourite POP songs</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+ 
+    <div class="card" onclick=" window.open('/genre/rap','mywindow');">
+      <div class="card-body">
+        <h5 class="card-title">Rap</h5>
+        <img class="cover" src="{% static 'img/rap.jpeg' %}" alt="">
+        <div class="overlay">
+          <div class="content">
+            <h3>Discover your new favourite RAP songs</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" onclick=" window.open('/genre/rock','mywindow');">
+      <div class="card-body">
+        <h5 class="card-title">Rock</h5>
+        <img class="cover" src="{% static 'img/rock.webp' %}" alt="">
+
+        <div class="overlay">
+          <div class="content">
+            <h3>Moove your feet and bang your head</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+
+    <div class="card" onclick=" window.open('/genre/latin','mywindow');">
+      <div class="card-body">
+        <h5 class="card-title">Latin</h5>
+        <img class="cover" src="{% static 'img/latino.png' %}" alt="">
+        <div class="overlay">
+          <div class="content">
+            <h3>Discover your new favourite LATIN songs</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" onclick=" window.open('/genre/rnb','mywindow');">
+      <div class="card-body">
+        <h5 class="card-title">R&B</h5>
+        <img class="cover" src="{% static 'img/rnb.jpeg' %}" alt="">
+
+        <div class="overlay">
+          <div class="content">
+            <h3>Discover your new favourite R&B songs</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" onclick=" window.open('/genre/edm','mywindow');">
+      <div class="card-body">
+        <h5 class="card-title">EDM</h5>
+        <img class="cover" src="{% static 'img/edm1.jpg' %}" alt="">
+        <div class="overlay">
+          <div class="content">
+            <h3>Tracks for the night</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="container2">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">About</h5>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod ipsam nihil quibusdam fuga illo explicabo sunt
+          deserunt ad doloribus recusandae hic facilis, maiores vitae at, voluptates accusantium dolor nemo laboriosam
+          quis totam. Dicta recusandae suscipit sunt soluta tenetur animi saepe cum molestias, porro, accusantium
+          provident.</p>
+        <a href="/account"><button type="button" class="btn btn-outline-primary">Use Mood Recommendation
+            System</button></a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="text-center "
+    style="background-color: #46244C21; border: 2px solid #F900BF; border-bottom: none; border-left: none; border-right: none;">
+    <!-- Grid container -->
+    <div class="container p-3 pb-0">
+      <!-- Section: Social media -->
+      <section class="mb-0">
+        <a style="color: #F900BF;     font-family: 'Jost', sans-serif; margin-right: 20px;">Check out github repo > </a>
+        <a href="https://github.com/Mehulparekh144" target="_blank"><img src="{% static 'img/github.png' %}"
+            class="footer-img" alt=""></a>
+      </section>
+
+    </div>
+    <!-- Grid container -->
+
+    <!-- Copyright -->
+    <div class="text-center p-3" style="color: #F900BF;     font-family: 'Jost', sans-serif;">
+      Deployed using Heroku | © Copyright 2022 : MusicLab
+    </div>
+
+
+    <!-- Copyright -->
+  </footer>
+
+
+
+  <!-- <footer>
+      <div class="contributors">
+      <a href="https://github.com/Mehulparekh144"  target="_blank"><img src="{% static 'img/github.png' %}"  class="footer-img" alt=""></a>
+      <p>Mehul</p>
+    
+      </div>
+    
+      <div class="contributors">
+      <a href="" target="_blank" ><img src="{% static 'img/github.png' %}"  class="footer-img" alt=""></a>
+      <p>Harsh</p>
+    
+      </div>
+      <div class="contributors">
+      <a href="https://github.com/shubham22122001" target="_blank" ><img src="{% static 'img/github.png' %}"  class="footer-img" alt=""></a>
+      <p>Shubham</p>
+    
+      </div>
+      <div class="contributors">
+      <a href="https://github.com/shubham22122001" target="_blank" ><img src="{% static 'img/github.png' %}"  class="footer-img" alt=""></a>
+      <p>Aditi</p>
+    
+      </div>
+    
+    </footer> -->
+
+
+</body>
+<script>
+  // function submit() {
+  //     window.top.location.href = "www.google.com"; //Handle the submit event of the form
+  //     e.preventDefault(); //This prevents the form from submitting, You might need to delete it in your actual code
+  //   };
+
+  document.getElementById('buttonsub').onclick = function(){
+  let song = document.getElementById('songName').value ;
+    location.href = "/search/" + song ;
+    console.log( "/search/" + song );
+
+
+
+
+  }
+</script>
+
+</html>
