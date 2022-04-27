@@ -56,7 +56,7 @@ def register(request):
 
 
         if len(username)<10:
-            messages.error(request, " Your user name must be under 10 characters")
+            messages.error(request, " Your user name must be greater 10 characters")
             return redirect('/register')
 
         if not username.isalnum():
@@ -135,19 +135,19 @@ def index(request):
 def response(request):
     
     if (request.method == 'POST'):
-        df = pd.read_csv('static/excel/data_moods.csv')
+        df = pd.read_csv('static/excel/final_songs.csv')
         message = request.POST.get('the_post')
         response_data = {}
         response_data['message'] = message
-        sad_songs = df[df['mood'] == 'Sad']['name'].values
-        calm_songs = df[df['mood'] == 'Calm']['name'].values
-        energetic_songs = df[df['mood'] == 'Energetic']['name'].values
-        happy_songs = df[df['mood'] == 'Happy']['name'].values
+        sad_songs = df[df['mood'] == 'Sad']['track_name'].values
+        calm_songs = df[df['mood'] == 'Calm']['track_name'].values
+        energetic_songs = df[df['mood'] == 'Energetic']['track_name'].values
+        happy_songs = df[df['mood'] == 'Happy']['track_name'].values
         if ('sad' in message):  
             response_data['response'] = 'Listen to these songs and remember you are best'  
             random.shuffle(sad_songs)
             for i in range(10):
-                artist_name = df[df['name'] == sad_songs[i]]['artist'].values
+                artist_name = df[df['track_name'] == sad_songs[i]]['track_artist'].values
                 response_data[i] = {
                     'name' : sad_songs[i],
                     'link' : youtube_link((artist_name + '_'+ sad_songs[i] )[0])
@@ -158,10 +158,8 @@ def response(request):
         elif ('calm' in message):
             response_data['response'] = 'Listen to these songs and have a peaceful listening experience'  
             random.shuffle(calm_songs)
-            # for i in range(10):
-            #     response_data[i] = calm_songs[i]
             for i in range(10):
-                artist_name = df[df['name'] == calm_songs[i]]['artist'].values
+                artist_name = df[df['track_name'] == calm_songs[i]]['track_artist'].values
                 response_data[i] = {
                     'name' : calm_songs[i],
                     'link' : youtube_link((artist_name + '_'+ calm_songs[i] )[0])
@@ -172,7 +170,7 @@ def response(request):
             response_data['response'] = 'Listen to these songs and dance your heart out'  
             random.shuffle(energetic_songs)
             for i in range(10):
-                artist_name = df[df['name'] == energetic_songs[i]]['artist'].values
+                artist_name = df[df['track_name'] == energetic_songs[i]]['track_artist'].values
                 response_data[i] = {
                     'name' : energetic_songs[i],
                     'link' : youtube_link((artist_name + '_'+ energetic_songs[i] )[0])
@@ -183,7 +181,7 @@ def response(request):
             response_data['response'] = 'Listen to these songs and spread happiness to others'  
             random.shuffle(happy_songs)
             for i in range(10):
-                artist_name = df[df['name'] == happy_songs[i]]['artist'].values
+                artist_name = df[df['track_name'] == happy_songs[i]]['track_artist'].values
                 response_data[i] = {
                     'name' : happy_songs[i],
                     'link' : youtube_link((artist_name + '_'+ happy_songs[i] )[0])
