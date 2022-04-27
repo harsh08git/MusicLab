@@ -9,7 +9,7 @@ import urllib.request
 import re
 from urllib3 import Retry
 from django.contrib.auth.models import User 
-from musicapp.models import Genres
+from musicapp.models import Genres,Mood
 from django.contrib import auth 
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -129,69 +129,110 @@ def logoutuser(request):
 
 @login_required(login_url='login')
 def index(request):  
+    df = pd.read_csv('static/excel/final_songs.csv')
+    print(len(df))
+    mood = Mood.objects.all()
+
+    if(len(mood) == 0):
+        data = [
+            Mood(
+                track_name = df['track_name'].values[i],
+                artist_name = df['track_artist'].values[i],
+                mood = df['mood'].values[i]
+            )
+            for i in range(len(df))
+        ]
+        Mood.objects.bulk_create(data)
+    else:
+        print('All Rows filled ', len(mood))
+    
     return render(request,'index.html')
 
 
 def response(request):
     
     if (request.method == 'POST'):
-        df = pd.read_csv('static/excel/final_songs.csv')
         message = request.POST.get('the_post')
         response_data = {}
         response_data['message'] = message
-        sad_songs = df[df['mood'] == 'Sad']['track_name'].values
-        calm_songs = df[df['mood'] == 'Calm']['track_name'].values
-        energetic_songs = df[df['mood'] == 'Energetic']['track_name'].values
-        happy_songs = df[df['mood'] == 'Happy']['track_name'].values
-        if ('sad' in message):  
-            response_data['response'] = 'Listen to these songs and remember you are best'  
-            random.shuffle(sad_songs)
-            for i in range(10):
-                artist_name = df[df['track_name'] == sad_songs[i]]['track_artist'].values
-                response_data[i] = {
-                    'name' : sad_songs[i],
-                    'link' : youtube_link((artist_name + '_'+ sad_songs[i] )[0])
-                }           
-                
 
+        song_dict = {}
+        if ('sad' in message):  
+            moods = Mood.objects.all().filter(mood= "Sad")
+            songs = []
+            for i in moods:
+                songs.append(i.artist_name + '_' + i.track_name )
+            random.shuffle(songs) 
+            for i in range(15):
+                try:
+                    song_dict[i] = {
+                        'name' : songs[i].split('_')[1],
+                        'link' : youtube_link(songs[i]),
+                    }
+                except Exception as e:
+                    print(songs[i])
+                pass
+            song_dict['response'] = 'Listen to these songs and remember you are best' 
+            print(song_dict)
         
         elif ('calm' in message):
-            response_data['response'] = 'Listen to these songs and have a peaceful listening experience'  
-            random.shuffle(calm_songs)
-            for i in range(10):
-                artist_name = df[df['track_name'] == calm_songs[i]]['track_artist'].values
-                response_data[i] = {
-                    'name' : calm_songs[i],
-                    'link' : youtube_link((artist_name + '_'+ calm_songs[i] )[0])
-                } 
-            
+            moods = Mood.objects.all().filter(mood= "Calm")
+            songs = []
+            for i in moods:
+                songs.append(i.artist_name + '_' + i.track_name )
+            random.shuffle(songs) 
+            for i in range(15):
+                try:
+                    song_dict[i] = {
+                        'name' : songs[i].split('_')[1],
+                        'link' : youtube_link(songs[i]),
+                    }
+                except Exception as e:
+                    print(songs[i])
+                pass
+            song_dict['response'] = 'Listen to these songs and have a peaceful listening experience' 
+            print(song_dict)
 
         elif ('energetic' in message):
-            response_data['response'] = 'Listen to these songs and dance your heart out'  
-            random.shuffle(energetic_songs)
-            for i in range(10):
-                artist_name = df[df['track_name'] == energetic_songs[i]]['track_artist'].values
-                response_data[i] = {
-                    'name' : energetic_songs[i],
-                    'link' : youtube_link((artist_name + '_'+ energetic_songs[i] )[0])
-                } 
-            
+            moods = Mood.objects.all().filter(mood= "Energetic")
+            songs = []
+            for i in moods:
+                songs.append(i.artist_name + '_' + i.track_name )
+            random.shuffle(songs) 
+            for i in range(15):
+                try:
+                    song_dict[i] = {
+                        'name' : songs[i].split('_')[1],
+                        'link' : youtube_link(songs[i]),
+                    }
+                except Exception as e:
+                    print(songs[i])
+                pass
+            song_dict['response'] = 'Listen to these songs and dance your heart out' 
+            print(song_dict)
 
         elif ('happy' in message):
-            response_data['response'] = 'Listen to these songs and spread happiness to others'  
-            random.shuffle(happy_songs)
-            for i in range(10):
-                artist_name = df[df['track_name'] == happy_songs[i]]['track_artist'].values
-                response_data[i] = {
-                    'name' : happy_songs[i],
-                    'link' : youtube_link((artist_name + '_'+ happy_songs[i] )[0])
-                } 
+            moods = Mood.objects.all().filter(mood= "Happy")
+            songs = []
+            for i in moods:
+                songs.append(i.artist_name + '_' + i.track_name )
+            random.shuffle(songs) 
+            for i in range(15):
+                try:
+                    song_dict[i] = {
+                        'name' : songs[i].split('_')[1],
+                        'link' : youtube_link(songs[i]),
+                    }
+                except Exception as e:
+                    print(songs[i])
+                pass
+            song_dict['response'] = 'Listen to these songs and spread happiness to others' 
+            print(song_dict)
 
         return HttpResponse(
-            json.dumps(response_data),
+            json.dumps(song_dict),
             content_type="application/json",
-            
-            
+                        
         )
     else:
         return HttpResponse(
