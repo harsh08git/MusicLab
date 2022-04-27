@@ -13,6 +13,8 @@ from musicapp.models import Genres,Mood
 from django.contrib import auth 
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.metrics.pairwise import cosine_similarity
 
 
 df2 = pd.read_csv('static/excel/spotify_songs.csv')
@@ -348,7 +350,7 @@ def genre(request,given_genre):
         song_dict['genre'] = given_genre
         return render(request,'genre.html',song_dict)
 
-    elif(given_genre == 'rnb'):
+    elif(given_genre == 'r&b'):
         song_dict = {}
         genre = Genres.objects.all().filter(genre= given_genre )
         songs = []
@@ -441,17 +443,81 @@ def fetch(request,song):
             'name' : genre.track_name,
             'artist' : genre.artist_name,
             'link' : youtube_link(genre.artist_name + '_' + genre.track_name),
-
         }
+        track = results['name']
+        print(track)
+        df=pd.read_csv('static/excel/spotify_songs.csv')
+        song_genre = df[df.track_name == track]['playlist_genre'].iloc[0]
+        df1 = df[df.playlist_genre == song_genre]
+        
+        df1.dropna(inplace=True)
+        feature_cols=['acousticness', 'danceability', 'duration_ms', 'energy',
+              'instrumentalness', 'key', 'liveness', 'loudness', 'mode',
+              'speechiness', 'tempo', 'valence']
 
-        results = {'dict' : results}
+        scaler = MinMaxScaler()
+        normalized_df =scaler.fit_transform(df1[feature_cols])
+        indices = pd.Series(df1.index, index=df1['track_name']).drop_duplicates()
+
+        # Create cosine similarity matrix based on given matrix
+        cosine = cosine_similarity(normalized_df)
+
+        def generate_recommendation(song_title, model_type=cosine ):
+            """
+            Purpose: Function for song recommendations 
+            Inputs: song title and type of similarity model
+            Output: Pandas series of recommended songs
+            """
+            # Get song indices
+            try:
+                index=indices[song_title].iloc[0]
+            except:
+                index=indices[song_title]
+            print("Inside Index")
+            print(index)
+            print("Going out of Index")
+            # Get list of songs for given songs
+            score=list(enumerate(model_type[index]))
+            # Sort the most similar songs
+            similarity_score = sorted(score,key = lambda x:x[1],reverse = True)
+            # Select the top-20 recommend songs
+            similarity_score = similarity_score[1:20]
+            top_songs_index = [i[0] for i in similarity_score]
+            # Top 10 recommende songs
+            top_songs=df1['track_name'].iloc[top_songs_index]
+            top_songs = top_songs.drop_duplicates()
+            top_songs = top_songs[:10]
+            return top_songs
+
+        s = generate_recommendation(results['name'],cosine).values
+        songs = []
+        for song in s:
+                track_name = song
+                artist_name = df1[df1.track_name == song].iloc[0]['track_artist']
+                songs.append(artist_name + '_' + track_name )
+        print(songs)
+                    
+        song_recommend={}
+        for i in range(len(songs)):
+            try:
+                song_recommend[i] = {
+                    'name' : songs[i].split('_')[1],
+                    'link' : youtube_link(songs[i]),
+                }
+            except Exception as e:
+                print(songs[i])
+                
+        print(song_recommend)        
+
+        results = {'dict' : results,'song' : song_recommend}
+        # print("\n\n\n\n\n")
         # print(results)
 
 
         return render(request,'landing.html' , results)
 
     else:
-        results = {'dict' : None}
+        results = {'dict' : None, 'song':None}
         return render(request,'landing.html',results)
 
     
